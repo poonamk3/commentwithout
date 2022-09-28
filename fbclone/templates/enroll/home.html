@@ -1,26 +1,25 @@
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Comments
-</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal{{i.id}}">
+    Comments
+    </button>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal{{i.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel{{i.id}}">Modal title</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      <h1>{{i.id}}</h1>
       <div class="modal-body">
-        <h1>Welcome</h1>
-        <form action="" method="POST">
+        <h1>{{user}}</h1>
+        <form action="{% url 'comment'%}" method="POST" class="comment-from">
                 {% csrf_token %}
-                post: <input type="text" name="posts"/><br/>
-                user: <input type="text" name="user"/><br/>
+                <input type="hidden" name="postSno" value="{{i.id}}" ><br>
                 Content: <br/>
-                <textarea cols="35" rows="8" name="body">
+                <textarea cols="35" rows="8" name="comment",id="textcomment">
                 </textarea><br/>
                 
                 <div class="modal-footer">
@@ -30,5 +29,5 @@
         </form>
       </div>
     </div>
-  </div>
-</div>
+    </div>
+    </div>

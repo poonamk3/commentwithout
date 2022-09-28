@@ -9,7 +9,8 @@ class Post(models.Model):
 	updated_at=models.DateTimeField(auto_now= True)
 	created_at=models.DateTimeField(auto_now_add=True)
 	likes=models.ManyToManyField(User,blank=True, related_name='likes')
-	
+	def __str__(self):
+		return self.title
 	def likeuser(self):
 		return ",".join(str(i) for i in self.likes.all())
 	def likeusers(self):
@@ -27,18 +28,14 @@ class Like(models.Model):
     def __str__(self):
         return f"{self.user}-{self.post}-{self.value}"
 
+
 class Comment(models.Model): 
-    post = models.ForeignKey(Post,on_delete=models.CASCADE,related_name='postcomments')
+    post = models.ForeignKey(Post,on_delete=models.CASCADE,related_name='comments')
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='usercomments')
     body = models.TextField() 
     created = models.DateTimeField(auto_now_add=True) 
     updated = models.DateTimeField(auto_now=True) 
-    
+    def __str__(self):
+    	return self.body
+    	
    
-    
-class Comments(models.Model): 
-	title=models.CharField(max_length=200)
-	user=models.CharField(max_length=200)
-	body = models.TextField() 
-	def __str__(self):
-		return self.body

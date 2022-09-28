@@ -11,7 +11,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
 from django.http import JsonResponse
-from .models import Post,Like,Comment,Comments
+from .models import Post,Like,Comment
 from django.views.generic.edit import DeleteView
 from bootstrap_modal_forms.generic import BSModalCreateView
 from django.urls import reverse_lazy
@@ -123,19 +123,21 @@ def like_post(request):
     return JsonResponse(data, safe=False)
 
 
+def add_comment(request):
+    comment=request.POST.get('comment')
+    postSno =request.POST.get('postSno')
+    post_obj= Post.objects.get(id=postSno)
+    data = list(Comment.objects.values())
 
-
-
-def Comment(request):
-    if request.method == "POST":
-        
-        comment=request.POST.get('comment')
-        user=request.user.username
-        postSno =request.POST.get('postSno')
-        post= Post.objects.get(id=postSno)
-        comment=Comment(user=user, post=post)
-        comment.save()
-        return redirect("/")
+    if request.method == "POST":    
+        user=request.user
+        cm=Comment(post=post_obj,user=user,body=comment)
+        cm.save()
+        cm=Comment.objects.values()
+    #     return JsonResponse({'cm':data,'status':'save'})
+    # else:
+    #     return JsonResponse({'status':'0'})
+    return redirect("/")
 
 
    

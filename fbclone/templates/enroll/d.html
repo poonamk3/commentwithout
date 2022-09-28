@@ -121,3 +121,41 @@ def Comment(request):
             
         else:
                 return render(request,'enroll/master.html')
+    # if request.method == "POST":
+    #     user=request.user.username
+    #     postSno =request.POST.get('postSno')
+    #     post= Post.objects.get(id=postSno)
+    #     comments=request.POST.get('comment')
+    #     cm=CommentFrom(request.POST)
+    #     if cm.is_valid():
+    #         cm=Comment(post=post,user=user,body=comments)
+    #         cm.save() 
+    # return redirect("/")
+if request.method == "POST":    
+        comment=request.POST['comment']
+        user=request.user.username
+        postSno =request.POST.get('postSno')
+        post_obj= Post.objects.get(id=postSno)
+        cm=Comment(post=post_obj,user=user,body=comment)
+        cm.save()
+        messages.success(request, "Your comment has been posted successfully")
+    return redirect("/")
+
+
+if request.method == "POST":    
+        user=request.user
+        cm=Comment(post=post_obj,user=user,body=comment)
+        cm.save()
+        cm=Comment.objects.values()
+        data = {
+            'cm':data
+            }
+    return JsonResponse(data, safe=False)
+    # return redirect("/")
+ if (data.status == "save"){
+                            console.log("Success");
+                            $('#cb').append('<p>' + response.comment.body + '</p>');                            }
+                        }
+                        if (data.status == 0){
+                            console.log("Error")
+                        }

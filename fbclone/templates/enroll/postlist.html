@@ -21,6 +21,19 @@
        text-align: center;
        margin-left: 30%;
      }
+    #example2 {
+      border: 1px solid;
+      padding: 10px;
+      box-shadow: 5px 10px 18px #888888;
+    }
+    #comm{
+        text-align: center;
+        color: blue;
+    }
+    #comment{
+        margin-left: 10%;
+    }
+
 </style>
 </head>
 <body>
@@ -48,35 +61,26 @@
      <h5>Author Name :-{{i.author}}</h5>
      <p>Description :- {{i.description}}</p>  
      <p>{{i.created_at}}</p>
-     <form method="POST">
-    {% csrf_token %}
-    {{comment_form.as_p}}
-  </form>
        <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal{{i.id}}">
     Comments
     </button>
-
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal{{i.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel{{i.id}}">Comments</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <h1>{{i.id}}</h1>
       <div class="modal-body">
-        <h1>Welcome</h1>
-        <form action="{% url 'comment'%}" method="POST">
+        <form action="{% url 'comment'%}" method="POST" class="comment-from">
                 {% csrf_token %}
-                <input type="hidden" name="postSno" value="{{i.id}}" ><br>
+                <input type="hidden" name="postSno" value="{{i.id}}" id="name"><br>
                 Content: <br/>
-                <textarea cols="35" rows="8" name="comment">
-                </textarea><br/>
-                
+                <textarea name="comment" id="content" cols="35" rows="8"></textarea>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <input type="submit" class="btn btn-primary" value="submit">
@@ -85,9 +89,25 @@
       </div>
     </div>
     </div>
-    </div>
+    </div><br><br>
 
-              
+    <div id="example2">
+        <h3 id="comm">Comments</h3>
+        {% if not i.comments.all %}
+            <p> No Comments</p>
+        {% else %}
+            {% for comment in i.comments.all%}
+            <div id="comment">
+                <span><strong>User:-{{comment.user}}</strong></span>
+                <p id="cb">{{comment.body}}</p>
+                <span><strong>Created time :-{{comment.created}}</strong></span>
+            </div>
+            <hr>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <br><br>
+    <div class="col-sm-1">           
     <form method="POST" action="/like/" id="{{i.id}}" class="like-from">
       {% csrf_token %}
       <input type="hidden" id="fname" name="post_id" value="{{i.id}}">
@@ -153,7 +173,28 @@
                     console.log('error',response)
                 }
             }) // End Ajax
-        }) // End Onclick   
+            $('.comment-from').click(function(event){
+                event.preventDefault();
+                $.ajax({
+                    method: 'POST',
+                    url: '{% url "comment" %}', 
+                    data: {
+                        'name': $('#name').val(),
+                        'content': $('#content').val(),
+                        'csrfToken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (response) {
+                        console.log(data.status)
+                       
+                        
+                    },
+                    error: function(error) {
+                        console.log(error)
+                    }
+                    
+               })
+            })
+        })// End Onclick   
     }); // End Documents       
 </script>
 <script></script>
