@@ -12,6 +12,7 @@
  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js'></script>
  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js'></script>
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
  
  <style>
      .postcenter{
@@ -76,14 +77,14 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="{% url 'comment'%}" method="POST" class="comment-from">
+        <form action="{% url 'comment'%}" method="POST" class="comment-from" id="{{i.id}}">
                 {% csrf_token %}
                 <input type="hidden" name="postSno" value="{{i.id}}" id="name"><br>
                 Content: <br/>
                 <textarea name="comment" id="content" cols="35" rows="8"></textarea>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <input type="submit" class="btn btn-primary" value="submit">
+                    <button type="submit" class="btn btn-primary"  id="comment-btn{{i.id}}">submit</button>
                 </div>
         </form>
       </div>
@@ -91,12 +92,17 @@
     </div>
     </div><br><br>
 
-    <div id="example2">
+    <div id="main">
         <h3 id="comm">Comments</h3>
         {% if not i.comments.all %}
             <p> No Comments</p>
         {% else %}
+        
             {% for comment in i.comments.all%}
+            <div>
+              <p id="text"></p>
+              <p id="author"></p>
+            </div>
             <div id="comment">
                 <span><strong>User:-{{comment.user}}</strong></span>
                 <p id="cb">{{comment.body}}</p>
@@ -104,6 +110,7 @@
             </div>
             <hr>
             {% endfor %}
+        </div>
         {% endif %}
     </div>
     <br><br>
@@ -123,7 +130,6 @@
       <h5 id="like-count{{i.id}}">{{i.likeusers}}</h5>
     </form><br>
     </div>
-
     <div>
      {% if user == i.author %}
       <a class="btn btn-outline-success" href="{% url 'deleteview' i.id %}">Delete</a>
@@ -148,9 +154,7 @@
             const trims = $.trim(likeuser)
             const trim = $.trim(likeText)
             const trimCount = parseInt(likecount)
-            
             $.ajax({
-
                 method :'POST',
                 url: '{% url "like-post" %}',
                 data: {
@@ -172,30 +176,34 @@
                 error : function(response){
                     console.log('error',response)
                 }
-            }) // End Ajax
-            $('.comment-from').click(function(event){
-                event.preventDefault();
-                $.ajax({
-                    method: 'POST',
-                    url: '{% url "comment" %}', 
-                    data: {
-                        'name': $('#name').val(),
-                        'content': $('#content').val(),
-                        'csrfToken': $('input[name=csrfmiddlewaretoken]').val()
-                    },
-                    success: function (response) {
-                        console.log(data.status)
-                       
-                        
-                    },
-                    error: function(error) {
-                        console.log(error)
-                    }
+            }) 
+        });// End Ajax
+        $('.comment-from').click(function(event){
+            event.preventDefault();
+            const post_id = $(this).attr('id')
+            const constname=$('#name').val()
+            const constbody=$('#content').val()
+            console.log(constbody)
+            $.ajax({
+                method: 'POST',
+                url: '{% url 'comment' %}', 
+                data: {
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                    'post_id':post_id,
+                    'name': constname,
+                    'content':constbody,
                     
-               })
+                },
+                success: function (data) {
+                    console.log(data)
+                },
+                error : function(response){
+                    console.log('poonam',response)
+                }
             })
-        })// End Onclick   
-    }); // End Documents       
+        })
+    });// End Onclick   
+ // End Documents       
 </script>
 <script></script>
 </body>

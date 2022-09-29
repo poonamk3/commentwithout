@@ -14,6 +14,7 @@ from django.http import JsonResponse
 from .models import Post,Like,Comment
 from django.views.generic.edit import DeleteView
 from bootstrap_modal_forms.generic import BSModalCreateView
+from django.shortcuts import  get_object_or_404
 from django.urls import reverse_lazy
 class IndexView(TemplateView):
     template_name='enroll/home.html'
@@ -127,17 +128,17 @@ def add_comment(request):
     comment=request.POST.get('comment')
     postSno =request.POST.get('postSno')
     post_obj= Post.objects.get(id=postSno)
-    data = list(Comment.objects.values())
+    # post_obj = Post.objects.get_object_or_404(id=postSno)
+    data = list(Comment.objects.values().order_by('created'))
 
     if request.method == "POST":    
         user=request.user
         cm=Comment(post=post_obj,user=user,body=comment)
         cm.save()
-        cm=Comment.objects.values()
-    #     return JsonResponse({'cm':data,'status':'save'})
-    # else:
-    #     return JsonResponse({'status':'0'})
-    return redirect("/")
+        return JsonResponse({'cm':data,'status':'save'},safe=False)
+    else:
+        return JsonResponse({'status':'0'})
+    # return redirect("/")
 
 
    

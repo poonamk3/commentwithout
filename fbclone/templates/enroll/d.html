@@ -159,3 +159,29 @@ if request.method == "POST":
                         if (data.status == 0){
                             console.log("Error")
                         }
+<div class="comment-wrapper{{ i.id }}">
+
+
+  $('.comment-from').click(function(event){
+                event.preventDefault();
+                const post_id = $(this).attr('id')
+                constname=$('#name').val();
+                console.log(post_id )
+                $.ajax({
+                    method: 'POST',
+                    url: '{% url "comment" %}', 
+                    data: {
+                        'name': $('#name').val(),
+                        'content': $('#content').val(),
+                        'csrfToken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function (data) {
+                        console.log(data.content)
+                         // data = JSON.parse(data);            // Added this code
+                         //  $("#text").text(data.cm);      // Updated
+                          // $("#author").text(data[0].author); 
+                        // // $(`.comment-wrapper${ post_id }`).html(data.cm);
+                        
+                    }
+                })
+            })
